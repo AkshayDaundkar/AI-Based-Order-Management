@@ -1,15 +1,17 @@
+// src/pages/OrderList.tsx
 import { useEffect, useState } from "react";
 import { fetchOrders } from "../utils/fetchorderapi";
 import { FiMoreVertical } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
-type Order = {
+interface Order {
   orderNumber: string;
   customer: string;
   transactionDate: string;
+  latePickupDate: string;
   status: string;
   lines: { amount: number }[];
-};
+}
 
 const statuses = ["All", "Pending", "Approved", "Shipped", "Cancelled"];
 
@@ -18,6 +20,9 @@ const OrderList = () => {
   const [filteredStatus, setFilteredStatus] = useState("All");
   const [sortColumn, setSortColumn] = useState<keyof Order | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 10;
 
   const navigate = useNavigate();
 
@@ -25,9 +30,14 @@ const OrderList = () => {
     fetchOrders().then(setOrders);
   }, []);
 
-  const filtered = orders.filter((order) =>
-    filteredStatus === "All" ? true : order.status === filteredStatus
-  );
+  const filtered = orders.filter((order) => {
+    const statusMatch =
+      filteredStatus === "All" || order.status === filteredStatus;
+    const searchMatch =
+      order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customer.toLowerCase().includes(searchTerm.toLowerCase());
+    return statusMatch && searchMatch;
+  });
 
   const sorted = [...filtered].sort((a, b) => {
     if (!sortColumn) return 0;
@@ -36,6 +46,15 @@ const OrderList = () => {
     return sortAsc ? (valA > valB ? 1 : -1) : valA < valB ? 1 : -1;
   });
 
+  const handleSort = (column: keyof Order) => {
+    if (sortColumn === column) {
+      setSortAsc((prev) => !prev);
+    } else {
+      setSortColumn(column);
+      setSortAsc(true);
+    }
+  };
+
   const getTotalAmount = (order: Order) =>
     order.lines.reduce((sum, l) => sum + l.amount, 0);
 
@@ -43,90 +62,177 @@ const OrderList = () => {
     setOrders((prev) => prev.filter((o) => o.orderNumber !== orderNumber));
   };
 
+  const totalPages = Math.ceil(sorted.length / itemsPerPage);
+  const paginatedOrders = sorted.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Orders</h1>
+      <h1 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+        Latest Orders
+      </h1>
 
-      <div className="flex gap-2 mb-4">
-        {statuses.map((status) => (
-          <button
-            key={status}
-            className={`px-4 py-2 rounded ${
-              filteredStatus === status
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200"
-            }`}
-            onClick={() => setFilteredStatus(status)}
-          >
-            {status}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center justify-between mb-4">
+        <div className="flex gap-2">
+          {statuses.map((status) => (
+            <button
+              key={status}
+              className={`px-4 py-2 rounded-full text-sm transition-all ${
+                filteredStatus === status
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+              }`}
+              onClick={() => setFilteredStatus(status)}
+            >
+              {status}
+            </button>
+          ))}
+        </div>
+        <input
+          type="text"
+          placeholder="Search..."
+          className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-800 dark:text-white"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
-      <div className="overflow-auto">
-        <table className="min-w-full bg-white shadow rounded">
-          <thead>
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0f172a] shadow">
+        <table className="min-w-full text-sm">
+          <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
             <tr>
-              {["orderNumber", "customer", "transactionDate", "status"].map(
-                (col) => (
-                  <th
-                    key={col}
-                    onClick={() => {
-                      setSortColumn(col as keyof Order);
-                      setSortAsc((prev) => (sortColumn === col ? !prev : true));
-                    }}
-                    className="px-4 py-2 text-left cursor-pointer"
-                  >
-                    {col.charAt(0).toUpperCase() + col.slice(1)}
-                  </th>
-                )
-              )}
-              <th className="px-4 py-2">Amount</th>
-              <th className="px-4 py-2">Actions</th>
+              <th
+                className="px-4 py-3 text-left cursor-pointer"
+                onClick={() => handleSort("orderNumber")}
+              >
+                Order Number
+              </th>
+              <th
+                className="px-4 py-3 text-left cursor-pointer"
+                onClick={() => handleSort("customer")}
+              >
+                Customer
+              </th>
+              <th
+                className="px-4 py-3 text-left cursor-pointer"
+                onClick={() => handleSort("transactionDate")}
+              >
+                Created Date
+              </th>
+              <th
+                className="px-4 py-3 text-left cursor-pointer"
+                onClick={() => handleSort("latePickupDate")}
+              >
+                Due Date
+              </th>
+              <th className="px-4 py-3 text-left">Amount</th>
+              <th className="px-4 py-3 text-left">Status</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {sorted.map((order) => (
-              <tr key={order.orderNumber} className="border-t">
-                <td className="px-4 py-2">{order.orderNumber}</td>
-                <td className="px-4 py-2">{order.customer}</td>
-                <td className="px-4 py-2">
+            {paginatedOrders.map((order) => (
+              <tr
+                key={order.orderNumber}
+                className="border-t border-gray-200 dark:border-gray-700"
+              >
+                <td className="px-4 py-3 font-medium text-gray-800 dark:text-white">
+                  {order.orderNumber}
+                </td>
+                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                  {order.customer}
+                </td>
+                <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                   {new Date(order.transactionDate).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-2">{order.status}</td>
-                <td className="px-4 py-2">${getTotalAmount(order)}</td>
-                <td className="px-4 py-2 relative">
-                  <div className="group inline-block">
-                    <FiMoreVertical className="cursor-pointer" />
-                    <div className="absolute hidden group-hover:block right-0 bg-white border rounded shadow mt-1 z-10">
-                      <button
-                        onClick={() =>
-                          navigate(`/orders/view/${order.orderNumber}`)
-                        }
-                        className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => deleteOrder(order.orderNumber)}
-                        className="block px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                  {new Date(order.latePickupDate).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-3 text-gray-800 dark:text-gray-200">
+                  ${getTotalAmount(order).toFixed(2)}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      order.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
+                        : order.status === "Cancelled"
+                        ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                        : "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                    }`}
+                  >
+                    {order.status}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-right relative group">
+                  <button className="text-gray-500 dark:text-gray-300">
+                    <FiMoreVertical />
+                  </button>
+                  <div className="absolute right-0 mt-2 w-28 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg z-10 hidden group-hover:block">
+                    <button
+                      onClick={() =>
+                        navigate(`/orders/view/${order.orderNumber}`)
+                      }
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-white"
+                    >
+                      View
+                    </button>
+                    <button
+                      onClick={() => deleteOrder(order.orderNumber)}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </td>
               </tr>
             ))}
-            {sorted.length === 0 && (
+            {paginatedOrders.length === 0 && (
               <tr>
-                <td colSpan={6} className="text-center py-4 text-gray-500">
+                <td
+                  colSpan={7}
+                  className="text-center py-4 text-gray-500 dark:text-gray-400"
+                >
                   No orders found.
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex items-center justify-between mt-6">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          className="px-4 py-2 border rounded text-sm bg-white dark:bg-gray-800 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          Previous
+        </button>
+        <div className="flex gap-1">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              className={`w-8 h-8 text-sm rounded ${
+                page === i + 1
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-white"
+              }`}
+              onClick={() => setPage(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+          className="px-4 py-2 border rounded text-sm bg-white dark:bg-gray-800 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

@@ -21,15 +21,21 @@ const MultiSelect = ({
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-1">{label}</label>
-      <div className="flex flex-wrap gap-2">
+      <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+        {label}
+      </label>
+      <div className="flex flex-wrap gap-3">
         {options.map((opt) => (
-          <label key={opt} className="text-sm flex gap-1 items-center">
+          <label
+            key={opt}
+            className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200"
+          >
             <input
               type="checkbox"
               value={opt}
               checked={values.includes(opt)}
               onChange={() => toggle(opt)}
+              className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-blue-600 focus:ring-blue-500"
             />
             {opt}
           </label>

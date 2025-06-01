@@ -1,37 +1,40 @@
-import { useState } from "react";
-import { FiUser } from "react-icons/fi";
-import UserModal from "./UserModal";
-import logo from "/logo.png"; // Adjust the filename as needed
+import { FiBell, FiSearch, FiMoon, FiSun } from "react-icons/fi";
+import avatar from "/avatar.jpg";
+import { useDarkMode } from "../hooks/useDarkMode";
 
 const Topbar = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [darkMode, setDarkMode] = useDarkMode();
 
   return (
-    <div className="bg-white border-b border-gray-200 shadow-sm px-4 py-3 flex justify-between items-center">
-      {/* Daxwell Logo */}
-      <div className="flex items-center gap-2">
-        <img
-          src={logo}
-          alt="Daxwell Logo"
-          className="h-8 w-auto object-contain"
+    <header className="w-full h-16 bg-white dark:bg-[#0f172a] border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between shadow-sm">
+      {/* Search */}
+      <div className="flex items-center gap-2 w-1/2">
+        <FiSearch className="text-gray-400 dark:text-gray-300" />
+        <input
+          type="text"
+          placeholder="Search or type command..."
+          className="w-full px-2 py-2 bg-transparent outline-none text-sm text-gray-700 dark:text-white"
         />
       </div>
 
-      {/* User Icon */}
-      <div className="relative">
+      {/* Icons */}
+      <div className="flex items-center gap-6">
+        {/* Toggle Theme Button */}
         <button
-          onClick={() => setShowModal(!showModal)}
-          className="text-gray-700"
+          onClick={() => setDarkMode(!darkMode)}
+          className="text-gray-500 dark:text-gray-300 hover:text-blue-500"
         >
-          <FiUser size={24} />
+          {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
         </button>
-        {showModal && (
-          <div className="absolute top-12 right-0 z-50">
-            <UserModal />
-          </div>
-        )}
+
+        <FiBell className="text-gray-500 dark:text-gray-300" size={18} />
+        <img
+          src={avatar}
+          alt="User"
+          className="w-8 h-8 rounded-full object-cover"
+        />
       </div>
-    </div>
+    </header>
   );
 };
 

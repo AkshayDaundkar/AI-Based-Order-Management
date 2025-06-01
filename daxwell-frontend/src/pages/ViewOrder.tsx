@@ -43,7 +43,7 @@ const ViewOrder = () => {
       <h1 className="text-2xl font-bold mb-4">View Order</h1>
       <button
         onClick={() => navigate("/orders/list")}
-        className="mb-4 px-4 py-2 bg-gray-200 rounded"
+        className="mb-4 px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 rounded transition"
       >
         ← Back to Orders
       </button>
@@ -80,20 +80,21 @@ const ViewOrder = () => {
         </ul>
       </div>
 
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold mb-2">Billing Address</h2>
-        {Object.entries(order.billingAddress || {}).map(([k, v]) => (
-          <ReadOnly key={k} label={k} value={v} />
-        ))}
-      </div>
+      <div className="mt-6 p-4 border rounded-lg bg-white dark:bg-[#0f172a] dark:border-gray-700">
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold mb-2">Billing Address</h2>
+          {Object.entries(order.billingAddress || {}).map(([k, v]) => (
+            <ReadOnly key={k} label={k} value={v} />
+          ))}
+        </div>
 
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold mb-2">Shipping Address</h2>
-        {Object.entries(order.shippingAddress || {}).map(([k, v]) => (
-          <ReadOnly key={k} label={k} value={v} />
-        ))}
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold mb-2">Shipping Address</h2>
+          {Object.entries(order.shippingAddress || {}).map(([k, v]) => (
+            <ReadOnly key={k} label={k} value={v} />
+          ))}
+        </div>
       </div>
-
       <div className="mt-6">
         <h2 className="text-xl font-bold mb-2">Order Lines</h2>
         {order.lines.map((line, i) => (
@@ -118,10 +119,12 @@ const ReadOnly = ({
   value: string | number;
 }) => (
   <div>
-    <label className="block text-sm font-medium mb-1 text-gray-700">
+    <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
       {label}
     </label>
-    <div className="bg-gray-100 px-3 py-2 rounded text-sm">{value}</div>
+    <div className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded text-sm text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+      {value}
+    </div>
   </div>
 );
 

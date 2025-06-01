@@ -101,7 +101,6 @@ const CreateOrder = () => {
       (k) => !form[k as keyof Order] && errs.push(`${k} is required`)
     );
 
-    // Only one of incoterm or freightTerms should be selected, not both
     if (form.incoterm && form.freightTerms) {
       errs.push("Select either Incoterm or Freight Terms, not both.");
     }
@@ -122,10 +121,10 @@ const CreateOrder = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-white dark:bg-[#0f172a] text-gray-800 dark:text-white min-h-screen rounded shadow">
       <h1 className="text-2xl font-bold mb-4">Create Order</h1>
       {errors.length > 0 && (
-        <div className="bg-red-100 p-2 text-red-700 rounded mb-4">
+        <div className="bg-red-100 dark:bg-red-900 p-3 text-red-800 dark:text-red-300 rounded mb-4">
           {errors.map((e, i) => (
             <p key={i}>{e}</p>
           ))}
@@ -133,6 +132,7 @@ const CreateOrder = () => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Form Inputs */}
         <Input
           label="Order Number"
           value={form.orderNumber}
@@ -230,38 +230,47 @@ const CreateOrder = () => {
 
       <div className="mt-6">
         <h2 className="text-xl font-bold mb-2">Billing Address</h2>
-        {["street", "city", "state", "postalCode", "country"].map((k) => (
-          <Input
-            key={k}
-            label={k}
-            value={
-              form.billingAddress?.[k as keyof typeof form.billingAddress] ?? ""
-            }
-            onChange={(v) =>
-              handleInput("billingAddress", { ...form.billingAddress, [k]: v })
-            }
-          />
-        ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {["street", "city", "state", "postalCode", "country"].map((k) => (
+            <Input
+              key={k}
+              label={k}
+              value={
+                form.billingAddress?.[k as keyof typeof form.billingAddress] ??
+                ""
+              }
+              onChange={(v) =>
+                handleInput("billingAddress", {
+                  ...form.billingAddress,
+                  [k]: v,
+                })
+              }
+            />
+          ))}
+        </div>
       </div>
 
       <div className="mt-6">
         <h2 className="text-xl font-bold mb-2">Shipping Address</h2>
-        {["street", "city", "state", "postalCode", "country"].map((k) => (
-          <Input
-            key={k}
-            label={k}
-            value={
-              form.shippingAddress?.[k as keyof typeof form.shippingAddress] ??
-              ""
-            }
-            onChange={(v) =>
-              handleInput("shippingAddress", {
-                ...form.shippingAddress,
-                [k]: v,
-              })
-            }
-          />
-        ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {["street", "city", "state", "postalCode", "country"].map((k) => (
+            <Input
+              key={k}
+              label={k}
+              value={
+                form.shippingAddress?.[
+                  k as keyof typeof form.shippingAddress
+                ] ?? ""
+              }
+              onChange={(v) =>
+                handleInput("shippingAddress", {
+                  ...form.shippingAddress,
+                  [k]: v,
+                })
+              }
+            />
+          ))}
+        </div>
       </div>
 
       <div className="mt-8">
@@ -269,7 +278,7 @@ const CreateOrder = () => {
         {form.lines.map((line, i) => (
           <div
             key={i}
-            className="grid grid-cols-1 md:grid-cols-6 gap-2 items-end mb-2"
+            className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end mb-3 bg-gray-50 dark:bg-gray-800 p-4 rounded"
           >
             <Input
               label="Item"
@@ -295,10 +304,12 @@ const CreateOrder = () => {
             />
             <div>
               <label className="block text-sm font-medium mb-1">Amount</label>
-              <p>${line.amount.toFixed(2)}</p>
+              <p className="text-gray-800 dark:text-gray-100">
+                ${line.amount.toFixed(2)}
+              </p>
             </div>
             <button
-              className="text-red-500"
+              className="text-red-500 text-sm"
               onClick={() => removeLine(i)}
               disabled={form.lines.length === 1}
               type="button"
@@ -308,7 +319,7 @@ const CreateOrder = () => {
           </div>
         ))}
         <button
-          className="mt-2 px-4 py-1 bg-green-500 text-white rounded"
+          className="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
           onClick={addLine}
           type="button"
         >
@@ -317,7 +328,7 @@ const CreateOrder = () => {
       </div>
 
       <button
-        className="mt-6 px-6 py-2 bg-blue-600 text-white rounded"
+        className="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
         onClick={handleSubmit}
         type="button"
       >

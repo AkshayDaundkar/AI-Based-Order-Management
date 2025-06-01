@@ -13,7 +13,7 @@ const Sidebar = () => {
       } transition-all duration-300 h-full`}
     >
       <div className="flex items-center justify-between p-4">
-        {!collapsed && <h1 className="text-lg font-bold">Order System</h1>}
+        {!collapsed && <h1 className="text-lg font-bold"></h1>}
         <button onClick={() => setCollapsed(!collapsed)} className="text-white">
           <FiMenu />
         </button>

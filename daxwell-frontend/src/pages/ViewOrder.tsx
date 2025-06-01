@@ -107,6 +107,34 @@ const ViewOrder = () => {
           </div>
         ))}
       </div>
+      {order.history && order.history.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-2">Order History</h2>
+          <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+            {order.history
+              .sort(
+                (a, b) =>
+                  new Date(a.timestamp).getTime() -
+                  new Date(b.timestamp).getTime()
+              )
+              .map((entry, idx) => (
+                <li
+                  key={idx}
+                  className="p-3 border border-gray-200 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800"
+                >
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Time: {new Date(entry.timestamp).toLocaleString()}
+                  </p>
+                  {entry.event && (
+                    <p className="text-xs italic text-gray-600 dark:text-gray-400">
+                      Event: {entry.event}
+                    </p>
+                  )}
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

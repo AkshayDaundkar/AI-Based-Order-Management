@@ -14,6 +14,13 @@ export type Address = {
   country: string;
 };
 
+export type OrderHistoryEntry = {
+  action: string;
+  timestamp: string;
+  user?: string;
+  event: string; // e.g., "created", "updated", "shipped", etc.
+};
+
 export type Order = {
   orderNumber: string;
   customer: string;
@@ -33,4 +40,5 @@ export type Order = {
   earlyPickupDate?: string;
   latePickupDate?: string;
   lines: OrderLine[];
+  history?: OrderHistoryEntry[];
 };

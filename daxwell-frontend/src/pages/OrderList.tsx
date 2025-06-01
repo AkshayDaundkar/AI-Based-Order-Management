@@ -1,8 +1,10 @@
 // src/pages/OrderList.tsx
 import { useEffect, useState } from "react";
-import { fetchOrders } from "../utils/fetchorderapi";
+import { deleteOrderAPI, fetchOrders } from "../utils/fetchorderapi";
 import { FiMoreVertical } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useNotificationLog } from "../context/NotificationContext";
 
 interface Order {
   orderNumber: string;
@@ -25,6 +27,7 @@ const OrderList = () => {
   const itemsPerPage = 10;
 
   const navigate = useNavigate();
+  const { addLog } = useNotificationLog();
 
   useEffect(() => {
     fetchOrders().then(setOrders);
@@ -58,8 +61,16 @@ const OrderList = () => {
   const getTotalAmount = (order: Order) =>
     order.lines.reduce((sum, l) => sum + l.amount, 0);
 
-  const deleteOrder = (orderNumber: string) => {
-    setOrders((prev) => prev.filter((o) => o.orderNumber !== orderNumber));
+  const deleteOrder = async (orderNumber: string) => {
+    try {
+      await deleteOrderAPI(orderNumber);
+      setOrders((prev) => prev.filter((o) => o.orderNumber !== orderNumber));
+      toast.success(`Order ${orderNumber} deleted`);
+      addLog(`Order ${orderNumber} was deleted`);
+    } catch (err) {
+      console.error("Error deleting order:", err);
+      alert("Failed to delete order.");
+    }
   };
 
   const totalPages = Math.ceil(sorted.length / itemsPerPage);
@@ -170,6 +181,7 @@ const OrderList = () => {
                   <button className="text-gray-500 dark:text-gray-300">
                     <FiMoreVertical />
                   </button>
+
                   <div className="absolute right-0 mt-2 w-28 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg z-10 hidden group-hover:block">
                     <button
                       onClick={() =>
@@ -178,6 +190,14 @@ const OrderList = () => {
                       className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-white"
                     >
                       View
+                    </button>
+                    <button
+                      onClick={() =>
+                        navigate(`/orders/edit/${order.orderNumber}`)
+                      }
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-300"
+                    >
+                      Edit
                     </button>
                     <button
                       onClick={() => deleteOrder(order.orderNumber)}

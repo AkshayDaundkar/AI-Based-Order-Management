@@ -90,8 +90,8 @@ const OrderList = () => {
         Latest Orders
       </h1>
 
-      <div className="flex flex-wrap items-center justify-between mb-4">
-        <div className="flex gap-2">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+        <div className="flex flex-wrap gap-2">
           {statuses.map((status) => (
             <button
               key={status}
@@ -109,7 +109,7 @@ const OrderList = () => {
         <input
           type="text"
           placeholder="Search..."
-          className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-800 dark:text-white"
+          className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-800 dark:text-white w-full md:w-64"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -228,7 +228,7 @@ const OrderList = () => {
         </table>
       </div>
 
-      <div className="flex items-center justify-between mt-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-6 gap-4">
         <button
           disabled={page === 1}
           onClick={() => setPage((p) => Math.max(p - 1, 1))}
@@ -236,7 +236,7 @@ const OrderList = () => {
         >
           Previous
         </button>
-        <div className="flex gap-1">
+        <div className="flex gap-1 justify-center">
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i + 1}

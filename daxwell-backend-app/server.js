@@ -8,7 +8,7 @@ const PORT = 4000;
 app.use(cors());
 app.use(express.json());
 
-const ordersPath = path.resolve(__dirname, "./src/data/orders.json");
+const ordersPath = path.resolve(__dirname, "./orders.json");
 
 //GET endpoint to fetch orders
 app.get("/api/orders", (req, res) => {

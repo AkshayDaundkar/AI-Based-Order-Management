@@ -2,7 +2,7 @@
 // src/pages/CreateOrder.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createOrder } from "../utils/fetchorderapi";
+import { createOrder, postHistoryLog } from "../utils/fetchorderapi";
 import type { Order, OrderLine } from "../types/order";
 import Input from "../components/forms/Input";
 import Select from "../components/forms/Select";
@@ -118,6 +118,10 @@ const CreateOrder = () => {
     try {
       await createOrder(form);
       toast.success(`Order ${form.orderNumber} created`);
+      await postHistoryLog(
+        form.orderNumber,
+        `Order ${form.orderNumber} was created`
+      );
       addLog(`Order ${form.orderNumber} was created`);
       navigate("/orders/list");
     } catch (err) {

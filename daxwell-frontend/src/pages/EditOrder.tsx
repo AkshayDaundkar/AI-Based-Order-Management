@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchOrders, updateOrderAPI } from "../utils/fetchorderapi";
+import {
+  fetchOrders,
+  postHistoryLog,
+  updateOrderAPI,
+} from "../utils/fetchorderapi";
 import type { Order, OrderLine } from "../types/order";
 import Input from "../components/forms/Input";
 import Select from "../components/forms/Select";
@@ -87,6 +91,10 @@ const EditOrder = () => {
     try {
       await updateOrderAPI(orderNumber!, form);
       toast.success(`Order ${form.orderNumber} updated`);
+      await postHistoryLog(
+        form.orderNumber,
+        `Order ${form.orderNumber} was Edited`
+      );
       addLog(`Order ${form.orderNumber} was edited`);
       navigate("/orders/list");
     } catch (e) {

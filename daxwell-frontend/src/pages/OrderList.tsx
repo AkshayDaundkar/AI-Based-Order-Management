@@ -1,6 +1,10 @@
 // src/pages/OrderList.tsx
 import { useEffect, useState } from "react";
-import { deleteOrderAPI, fetchOrders } from "../utils/fetchorderapi";
+import {
+  deleteOrderAPI,
+  fetchOrders,
+  postHistoryLog,
+} from "../utils/fetchorderapi";
 import { FiMoreVertical } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -66,6 +70,7 @@ const OrderList = () => {
       await deleteOrderAPI(orderNumber);
       setOrders((prev) => prev.filter((o) => o.orderNumber !== orderNumber));
       toast.success(`Order ${orderNumber} deleted`);
+      await postHistoryLog(orderNumber, `Order ${orderNumber} was deleted`);
       addLog(`Order ${orderNumber} was deleted`);
     } catch (err) {
       console.error("Error deleting order:", err);

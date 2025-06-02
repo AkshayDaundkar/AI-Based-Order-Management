@@ -33,3 +33,17 @@ export const updateOrderAPI = async (
   });
   if (!res.ok) throw new Error("Failed to update order");
 };
+
+export const fetchNotifications = async () => {
+  const res = await fetch("http://localhost:4000/api/notifications");
+  if (!res.ok) throw new Error("Failed to fetch notifications");
+  return await res.json(); // returns [{ message, timestamp, orderNumber }]
+};
+
+export const postHistoryLog = async (orderNumber: string, event: string) => {
+  await fetch(`http://localhost:4000/api/notifications/${orderNumber}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ event, timestamp: new Date().toISOString() }),
+  });
+};

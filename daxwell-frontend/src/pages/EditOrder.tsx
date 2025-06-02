@@ -29,7 +29,7 @@ const EditOrder = () => {
   useEffect(() => {
     const load = async () => {
       const all = await fetchOrders();
-      const existing = all.find((o) => o.orderNumber === orderNumber);
+      const existing = all.find((o: Order) => o.orderNumber === orderNumber);
       if (existing) setForm(existing);
     };
     load();
@@ -46,10 +46,13 @@ const EditOrder = () => {
     value: any
   ) => {
     if (!form) return;
-    const newLines = [...form.lines];
-    newLines[index][key] =
-      key === "quantity" || key === "price" ? Number(value) : value;
-    newLines[index].amount = newLines[index].quantity * newLines[index].price;
+    const newLines: OrderLine[] = [...form.lines];
+    const updatedLine: OrderLine = {
+      ...newLines[index],
+      [key]: key === "quantity" || key === "price" ? Number(value) : value,
+    };
+    updatedLine.amount = updatedLine.quantity * updatedLine.price;
+    newLines[index] = updatedLine;
     setForm((prev) => ({ ...prev!, lines: newLines }));
   };
 
@@ -99,6 +102,7 @@ const EditOrder = () => {
       navigate("/orders/list");
     } catch (e) {
       alert("Failed to update order.");
+      console.error("Update order error:", e);
     }
   };
 

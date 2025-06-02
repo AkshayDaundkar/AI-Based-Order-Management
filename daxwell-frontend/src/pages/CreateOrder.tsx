@@ -64,9 +64,11 @@ const CreateOrder = () => {
     key: keyof OrderLine,
     value: any
   ) => {
-    const newLines = [...form.lines];
-    newLines[index][key] =
-      key === "quantity" || key === "price" ? Number(value) : value;
+    const newLines: OrderLine[] = [...form.lines];
+    newLines[index] = {
+      ...newLines[index],
+      [key]: key === "quantity" || key === "price" ? Number(value) : value,
+    };
     newLines[index].amount = newLines[index].quantity * newLines[index].price;
     setForm((prev) => ({ ...prev, lines: newLines }));
   };

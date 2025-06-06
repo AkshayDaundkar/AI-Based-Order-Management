@@ -12,9 +12,12 @@ const ChatBot = () => {
     if (!input.trim()) return;
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:4000/api/chatbot", {
-        question: input,
-      });
+      const res = await axios.post(
+        "https://daxwell-assesment.onrender.com/api/chatbot",
+        {
+          question: input,
+        }
+      );
       setResponse(res.data.answer || "No response available.");
     } catch (err) {
       console.error("Chatbot error:", err);

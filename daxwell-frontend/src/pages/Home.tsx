@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { fetchOrders } from "../utils/fetchorderapi";
 import { fetchNotifications } from "../utils/fetchorderapi";
+import ChatBot from "../components/Chatbot";
 
 const Home = () => {
   const [orders, setOrders] = useState<any[]>([]);
@@ -39,6 +40,7 @@ const Home = () => {
 
       {/* Activity Sidebar - Span 1/3 */}
       <RecentActivity />
+      <ChatBot />
     </div>
   );
 };

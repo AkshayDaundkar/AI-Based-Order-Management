@@ -3,11 +3,16 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const app = express();
+const { OpenAI } = require("openai");
 const PORT = 4000;
 
 app.use(cors());
 app.use(express.json());
+require("dotenv").config();
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 const ordersPath = path.resolve(__dirname, "./orders.json");
 
 //GET endpoint to fetch orders
@@ -157,4 +162,43 @@ app.post("/api/notifications/:orderNumber", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
+});
+
+//AI Insights Endpoint
+app.post("/api/chatbot", async (req, res) => {
+  const { question } = req.body;
+
+  try {
+    const rawData = fs.readFileSync(ordersPath, "utf8");
+    const orders = JSON.parse(rawData);
+
+    const prompt = `
+    You are a helpful assistant for an order dashboard.
+    Given the following orders data in JSON and a user question, respond concisely and accurately.
+    If the question is about insights, Summarize this orders data with 5 insights:
+    1. Status-wise order count + order numbers,
+    2. Pending reasons summary,
+    3. Upcoming pickups (next 7 days),
+    4. Delayed or stuck orders,
+    5. Top 3 customers by total quantity.
+    Return in bullet points. Use today's date as reference.
+    Otherwise, answer the user's specific question clearly.
+    Here is the data:
+    ${JSON.stringify(orders)}
+    Question: ${question}
+
+`;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.5,
+    });
+
+    const answer = completion.choices[0].message.content;
+    res.json({ answer });
+  } catch (err) {
+    console.error("Chatbot Error:", err);
+    res.status(500).json({ error: "Failed to generate chatbot response" });
+  }
 });

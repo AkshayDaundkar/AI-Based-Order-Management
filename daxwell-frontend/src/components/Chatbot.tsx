@@ -28,17 +28,19 @@ const ChatBot = () => {
   };
 
   return (
-    <div className="mt-6 bg-gradient-to-br from-gray-900 to-slate-800 border border-gray-700 rounded-2xl p-6 shadow-md text-white">
+    <div className="mt-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
       <div className="flex items-center gap-2 mb-3">
-        <Bot className="text-blue-400" size={20} />
-        <h2 className="text-lg font-bold">Ask Daxwell SmartBot</h2>
+        <Bot className="text-blue-500 dark:text-blue-400" size={20} />
+        <h2 className="text-lg font-bold text-gray-800 dark:text-white">
+          Ask Daxwell SmartBot
+        </h2>
       </div>
 
-      <div className="bg-gray-800 rounded-xl p-4 shadow-sm">
+      <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 shadow-sm">
         <textarea
           rows={3}
           placeholder="Ask about orders, e.g., 'Which order is highest amount?'"
-          className="w-full rounded-md bg-gray-900 text-white border border-gray-600 px-4 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
@@ -54,7 +56,7 @@ const ChatBot = () => {
       </div>
 
       {response && (
-        <div className="mt-4 border-t border-gray-700 pt-4 text-sm leading-relaxed text-gray-300 whitespace-pre-wrap">
+        <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 text-sm leading-relaxed text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
           {response}
         </div>
       )}

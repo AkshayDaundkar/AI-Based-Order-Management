@@ -917,61 +917,6 @@
       }
     ]
   },
-   {
-    "orderNumber": "11",
-    "customer": "Akshay",
-    "transactionDate": "2025-06-01",
-    "status": "Pending",
-    "fromLocation": "Warehouse B",
-    "toLocation": "A",
-    "pendingApprovalReasonCode": [
-      "CREDIT_HOLD"
-    ],
-    "supportRep": "",
-    "incoterm": "EXW",
-    "freightTerms": "",
-    "totalShipUnitCount": 10,
-    "totalQuantity": 10,
-    "discountRate": 10,
-    "billingAddress": {
-      "street": "815 Bering Drive",
-      "city": "Arlington",
-      "state": "TX",
-      "postalCode": "76013",
-      "country": "United States"
-    },
-    "shippingAddress": {
-      "street": "Centinnial COurt 1413 C",
-      "city": "Arlington",
-      "state": "Texas",
-      "postalCode": "76019",
-      "country": "India"
-    },
-    "earlyPickupDate": "2025-06-01",
-    "latePickupDate": "2025-07-10",
-    "lines": [
-      {
-        "item": "Apple",
-        "units": "23",
-        "quantity": 50,
-        "price": 100,
-        "amount": 5000
-      },
-      {
-        "item": "Oranges",
-        "units": "45",
-        "quantity": 56,
-        "price": 89,
-        "amount": 4984
-      }
-    ],
-    "history": [
-      {
-        "event": "Order 11 was created",
-        "timestamp": "2025-06-02T04:41:04.826Z"
-      }
-    ]
-  },
   {
     "orderNumber": "12",
     "customer": "Yang",

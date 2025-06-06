@@ -863,7 +863,7 @@
         ]
     },
     {
-        "orderNumber": "11",
+        "orderNumber": "ORD-0011",
         "customer": "Akshay",
         "transactionDate": "2025-06-01",
         "status": "Pending",
@@ -912,13 +912,13 @@
         ],
         "history": [
             {
-                "event": "Order 11 was created",
+                "event": "Order ORD-0011 was created",
                 "timestamp": "2025-06-02T04:41:04.826Z"
             }
         ]
     },
     {
-        "orderNumber": "12",
+        "orderNumber": "ORD-0012",
         "customer": "Yang",
         "transactionDate": "2025-06-06",
         "status": "Approved",
@@ -965,13 +965,13 @@
         ],
         "history": [
             {
-                "event": "Order 12 was created",
+                "event": "Order ORD-0012 was created",
                 "timestamp": "2025-06-06T00:00:20.000Z"
             }
         ]
     },
     {
-        "orderNumber": "13",
+        "orderNumber": "ORD-0013",
         "customer": "Jelly",
         "transactionDate": "2025-06-06",
         "status": "Pending",
@@ -1024,13 +1024,13 @@
                 "timestamp": "2025-06-06T00:20:00.000Z"
             },
             {
-                "event": "Order 13 was Edited",
+                "event": "Order ORD-0013 was Edited",
                 "timestamp": "2025-06-06T05:27:35.205Z"
             }
         ]
     },
     {
-        "orderNumber": "14",
+        "orderNumber": "ORD-0014",
         "customer": "TechCorp",
         "transactionDate": "2025-06-07",
         "status": "Pending",
@@ -1079,11 +1079,11 @@
         ],
         "history": [
             {
-                "event": "Order 14 was created",
+                "event": "Order ORD-0014 was created",
                 "timestamp": "2025-06-06T00:10:00.000Z"
             },
             {
-                "event": "Order 14 was Edited",
+                "event": "Order ORD-0014 was Edited",
                 "timestamp": "2025-06-06T05:28:08.088Z"
             }
         ]

@@ -17,6 +17,11 @@ interface Order {
   latePickupDate: string;
   status: string;
   lines: { amount: number }[];
+  pendingApprovalReasonCode?:
+    | "PRICE_DISCREPANCY"
+    | "CREDIT_HOLD"
+    | "STOCK_SHORTAGE"
+    | "CUSTOMER_REQUEST";
 }
 
 const statuses = ["All", "Pending", "Approved", "Shipped", "Cancelled"];
@@ -50,6 +55,9 @@ const OrderList = () => {
     if (!sortColumn) return 0;
     const valA = a[sortColumn];
     const valB = b[sortColumn];
+    if (valA === undefined && valB === undefined) return 0;
+    if (valA === undefined) return sortAsc ? -1 : 1;
+    if (valB === undefined) return sortAsc ? 1 : -1;
     return sortAsc ? (valA > valB ? 1 : -1) : valA < valB ? 1 : -1;
   });
 
@@ -145,6 +153,9 @@ const OrderList = () => {
               </th>
               <th className="px-4 py-3 text-left">Amount</th>
               <th className="px-4 py-3 text-left">Status</th>
+              {filteredStatus === "Pending" && (
+                <th className="px-4 py-3 text-left">Pending Reason</th>
+              )}
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -169,6 +180,11 @@ const OrderList = () => {
                 <td className="px-4 py-3 text-gray-800 dark:text-gray-200">
                   ${getTotalAmount(order).toFixed(2)}
                 </td>
+                {filteredStatus === "Pending" && (
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
+                    {order.pendingApprovalReasonCode || "-"}
+                  </td>
+                )}
                 <td className="px-4 py-3">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${
